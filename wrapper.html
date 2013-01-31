@@ -1,0 +1,78 @@
+<html>
+<head>
+  <title>String Literal Wrapper</title>
+</head>
+<body>
+  <script>
+    function wrapText() {
+      var textElement = document.getElementById('code');
+      var lineList = textElement.value.split('\n');
+
+      var widthElement = document.getElementById('wrapwidth');
+      var wrapColumn = parseInt(widthElement.value, 10);
+
+      var output = '';
+        
+      for(var i = 0; i < lineList.length; ++i) {
+        var thisLine = lineList[i];
+        if(thisLine.length < wrapColumn) {
+          output += thisLine + '\n';
+        } else {
+          var indentLevel = thisLine.indexOf('"') + 1; // at this point, a \" wouldn't make sense, so this is the string literal start.
+          var charsRemaining = thisLine.length;
+
+          // copy the first part of the line into the output as-is
+          var firstCopyChars = breakPos(thisLine, wrapColumn - 2);
+          output += thisLine.substring(0, firstCopyChars) + '"\n';
+
+          charsRemaining -= firstCopyChars;
+          thisLine = thisLine.substring(firstCopyChars, thisLine.length);
+
+          var indentText = new Array(indentLevel).join(' ');
+
+          while(wrapColumn < charsRemaining) {
+            var charsToCopy = breakPos(thisLine, wrapColumn - indentLevel - 2);
+            var nextLine = thisLine.substring(0,charsToCopy);
+
+            charsRemaining -= charsToCopy;
+            thisLine = thisLine.substring(charsToCopy, thisLine.length);
+
+            output += indentText + '"' + nextLine + '"\n';    
+          }
+
+          output += indentText + '"' + thisLine + '\n';
+        }
+      }
+
+      textElement.value = output;
+    }
+
+    function breakPos(string, maxChars) {
+      var search = string.substring(0, maxChars);
+      var lastSpace = search.lastIndexOf(' ');
+      var lastHyphen = search.lastIndexOf('-');
+
+      if(lastSpace < lastHyphen) {
+        return lastHyphen + 1;
+      } else if(lastHyphen < lastSpace) {
+        return lastSpace + 1;
+      }
+        
+      return maxChars; // if they're equal they should both be -1... in which case we have no good breaking point (why do you have an ~80char long word!?)
+    }
+
+  </script>
+
+  Word Wrap Column:
+  <select id="wrapwidth">
+    <option>70</option>
+    <option selected="true">78</option>
+    <option>80</option>
+    <option>100</option>
+    <option>120</option>
+  </select>
+  <button id="wrapbutt" onClick="wrapText()" type="button">Wrap it.</button>
+  <br><br>
+  <textarea autofocus="true" cols="120" placeholder="Paste your code here..." rows="30" id="code"></textarea>
+</body>
+</html>
