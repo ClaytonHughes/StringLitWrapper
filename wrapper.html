@@ -47,6 +47,10 @@
       }
 
       textElement.value = output;
+      textElement.focus();
+      textElement.setSelectionRange(0,0);
+      textElement.scrollTop = 0;
+
     }
 
     function breakPos(string, maxChars) {
