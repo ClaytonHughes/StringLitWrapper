@@ -54,17 +54,18 @@
     }
 
     function breakPos(string, maxChars) {
-      var search = string.substring(0, maxChars);
-      var lastSpace = search.lastIndexOf(' ');
-      var lastHyphen = search.lastIndexOf('-');
+      var breakchars = [' ', '-'];
+      var maxBreakLen = -1;
 
-      if(lastSpace < lastHyphen) {
-        return lastHyphen + 1;
-      } else if(lastHyphen < lastSpace) {
-        return lastSpace + 1;
+      for(var i = 0; i < breakchars.length; ++i) {
+        var search = string.substring(0, maxChars);
+        var lastChar = search.lastIndexOf(' ');
+        if(maxBreakLen < lastChar) {
+          maxBreakLen = lastChar;
+        }
       }
-        
-      return maxChars; // if they're equal they should both be -1... in which case we have no good breaking point (why do you have an ~80char long word!?)
+
+      return maxBreakLen + 1;
     }
     
     function combineContiguousStrings(lineList) {
