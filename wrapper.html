@@ -12,7 +12,9 @@
       var wrapColumn = parseInt(widthElement.value, 10);
 
       var output = '';
-        
+
+      lineList = combineContiguousStrings(lineList);
+
       for(var i = 0; i < lineList.length; ++i) {
         var thisLine = lineList[i];
         if(thisLine.length < wrapColumn) {
@@ -59,6 +61,25 @@
       }
         
       return maxChars; // if they're equal they should both be -1... in which case we have no good breaking point (why do you have an ~80char long word!?)
+    }
+    
+    function combineContiguousStrings(lineList) {
+      var wrappedLine = /^\s*\"/; // white space followed by a quote
+      var newList = [];
+      for(var i = 0; i < lineList.length; ++i) {
+        if(!wrappedLine.test(lineList[i])) {
+          newList.push(lineList[i]);
+        } else {
+          var prevLine = newList[newList.length - 1];
+          var lastQuote = prevLine.lastIndexOf('"');
+          prevLine = prevLine.substring(0, lastQuote); // strip off last quote character.
+          var append = lineList[i].substring(lineList[i].indexOf('"')+1); // strip off first quote character
+
+          newList[newList.length - 1] = prevLine + append;
+        }
+      }
+      
+      return newList;
     }
 
   </script>
