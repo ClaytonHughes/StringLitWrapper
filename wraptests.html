@@ -55,6 +55,17 @@
       //                            123456789012345678901234567890
       assert(textElement.value === 'foo("6789A "\n'+
                                    '    "CDEF");\n', 'Wrap on exactly <width> chars (including space+")');
+                                   
+      textElement.value = 'write("You are in a strange location, but you cannot remember how you " +\n' +
+                          '      "got here. Everything is hazy, as though viewed through a " +\n' +
+                          '      "gauze...");'; // -- Sorcerer
+      wrapText('code', 78);
+      //                                     1         2         3         4         5         6         7         8
+      //                            12345678901234567890123456789012345678901234567890123456789012345678901234567890
+      assert(textElement.value === 'write("You are in a strange location, but you cannot remember how you got "\n' +
+                                   '      "here. Everything is hazy, as though viewed through a gauze...");\n',
+                                   'Rewrap concatenated strings into one');
+
     }
 
     runTest();   
