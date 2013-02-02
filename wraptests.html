@@ -1,0 +1,63 @@
+<html>
+<head>
+  <title>String Literal Wrapper Test Cases</title>
+  <style>  
+    .pass:before {  
+      content: 'PASS: ';  
+      color:  green;  
+      font-weight: bold;  
+    }  
+    .fail:before {  
+      content: 'FAIL: ';  
+      color: red;  
+      font-weight: bold;  
+    }  
+    </style>  
+</head>
+<body>  
+  <textarea autofocus="true" cols="120" placeholder="Paste your code here..." rows="10" id="code"></textarea>
+  <ul id="tests"></ul>
+  <script src="wrapper.js" ></script>
+  <script>
+    function assert(test, msg) {
+      var li = document.createElement('li');
+      li.className = test ? 'pass' : 'fail';
+      li.appendChild(document.createTextNode(msg));
+      var tests = document.getElementById('tests');
+      tests.appendChild(li);
+    }
+
+    function runTest() {
+      var textElement = document.getElementById('code');
+      textElement.value = 'call_function("With a really long string argument.");';
+      wrapText('code', 40);
+      //                                     1         2         3         4
+      //                            1234567890123456789012345678901234567890
+      assert(textElement.value === 'call_function("With a really long "\n' +
+                                   '              "string argument.");\n', 'Basic Wrapping');
+
+      wrapText('code', 30);
+      //                                     1         2         3
+      //                            123456789012345678901234567890
+      assert(textElement.value === 'call_function("With a really "\n' +
+                                   '              "long string "\n' +
+                                   '              "argument.");\n', 'Rewrapping skinnier');
+
+      wrapText('code', 50);
+      //                                     1         2         3         4     
+      //                            123456789012345678901234567890123456789012345
+      assert(textElement.value === 'call_function("With a really long string "\n' +
+                                   '              "argument.");\n', 'Rewrapping wider');
+
+      textElement.value = 'foo("6789A CDEF");';
+      wrapText('code', 12);
+      //                                     1         2         3
+      //                            123456789012345678901234567890
+      assert(textElement.value === 'foo("6789A "\n'+
+                                   '    "CDEF");\n', 'Wrap on exactly <width> chars (including space+")');
+    }
+
+    runTest();   
+  </script> 
+</body>
+</html>
