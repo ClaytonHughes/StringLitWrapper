@@ -17,7 +17,7 @@
 <body>  
   <textarea autofocus="true" cols="120" placeholder="Paste your code here..." rows="10" id="code"></textarea>
   <ul id="tests"></ul>
-  <script src="wrapper.js" ></script>
+  <script src="wrapper.js"></script>
   <script>
     function assert(test, msg) {
       var li = document.createElement('li');
@@ -27,48 +27,63 @@
       tests.appendChild(li);
     }
 
+    function strdiff(str1, str2, msg) {
+      var minLen = Math.min(str1.length, str2.length);
+
+      for(var i = 0; i < minLen; ++i) {
+        if(str1[i] == str2[i]) continue;
+
+        assert(false, msg + ' - Differs at position [' + i + '] ' + str1[i] + ' != ' + str2[i] );
+        break;
+      }
+      
+      if(str1.length != minLen || str2.length != minLen){
+        assert(false, msg + ' - Differs in length at position [' + minLen + ']' ); 
+      }
+
+      assert(true, msg);
+    }
+
     function runTest() {
       var textElement = document.getElementById('code');
       textElement.value = 'call_function("With a really long string argument.");';
       wrapText('code', 40);
-      //                                     1         2         3         4
-      //                            1234567890123456789012345678901234567890
-      assert(textElement.value === 'call_function("With a really long "\n' +
-                                   '              "string argument.");\n', 'Basic Wrapping');
+      //                                   1         2         3         4
+      //                          1234567890123456789012345678901234567890
+      strdiff(textElement.value, 'call_function("With a really long "\n' +
+                                 '              "string argument.");\n', 'Basic Wrapping');
 
       wrapText('code', 30);
-      //                                     1         2         3
-      //                            123456789012345678901234567890
-      assert(textElement.value === 'call_function("With a really "\n' +
-                                   '              "long string "\n' +
-                                   '              "argument.");\n', 'Rewrapping skinnier');
+      //                                   1         2         3
+      //                          123456789012345678901234567890
+      strdiff(textElement.value, 'call_function("With a really "\n' +
+                                 '              "long string "\n' +
+                                 '              "argument.");\n', 'Rewrapping skinnier');
 
       wrapText('code', 50);
-      //                                     1         2         3         4     
-      //                            123456789012345678901234567890123456789012345
-      assert(textElement.value === 'call_function("With a really long string "\n' +
-                                   '              "argument.");\n', 'Rewrapping wider');
+      //                                   1         2         3         4         5
+      //                          12345678901234567890123456789012345678901234567890
+      strdiff(textElement.value, 'call_function("With a really long string "\n' +
+                                 '              "argument.");\n', 'Rewrapping wider');
 
       textElement.value = 'foo("6789A CDEF");';
       wrapText('code', 12);
-      //                                     1         2         3
-      //                            123456789012345678901234567890
-      assert(textElement.value === 'foo("6789A "\n'+
-                                   '    "CDEF");\n', 'Wrap on exactly <width> chars (including space+")');
-                                   
+      //                                   1         2
+      //                          12345678901234567890
+      strdiff(textElement.value, 'foo("6789A "\n'+
+                                 '    "CDEF");\n', 'Wrap on exactly <width> chars (including the space and terminal quotemark")');
+      
       textElement.value = 'write("You are in a strange location, but you cannot remember how you " +\n' +
                           '      "got here. Everything is hazy, as though viewed through a " +\n' +
                           '      "gauze...");'; // -- Sorcerer
       wrapText('code', 78);
-      //                                     1         2         3         4         5         6         7         8
-      //                            12345678901234567890123456789012345678901234567890123456789012345678901234567890
-      assert(textElement.value === 'write("You are in a strange location, but you cannot remember how you got "\n' +
-                                   '      "here. Everything is hazy, as though viewed through a gauze...");\n',
-                                   'Rewrap concatenated strings into one');
-
+      //                                   1         2         3         4         5         6         7         8
+      //                          12345678901234567890123456789012345678901234567890123456789012345678901234567890
+      strdiff(textElement.value, 'write("You are in a strange location, but you cannot remember how you got "\n' +
+                                 '      "here. Everything is hazy, as though viewed through a gauze...");\n', 'Rewrap concatenated strings into one');
     }
 
-    runTest();   
-  </script> 
+    runTest();
+  </script>
 </body>
 </html>
