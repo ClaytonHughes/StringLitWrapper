@@ -11,11 +11,11 @@ function wrapText(textelemID, wrapColumn) {
     if(thisLine.length < wrapColumn) {
       output += thisLine + '\n';
     } else {
-      var indentLevel = thisLine.indexOf('"') + 1; // at this point, a \" wouldn't make sense, so this is the string literal start.
+      var indentLevel = thisLine.indexOf('"') + 1; // ... assuming not a quote stuck in a comment somewhere
       var charsRemaining = thisLine.length;
 
       // copy the first part of the line into the output as-is
-      var firstCopyChars = breakPos(thisLine, wrapColumn - 2);
+      var firstCopyChars = breakPos(thisLine, wrapColumn);
       output += thisLine.substring(0, firstCopyChars) + '"\n';
 
       charsRemaining -= firstCopyChars;
@@ -23,8 +23,8 @@ function wrapText(textelemID, wrapColumn) {
 
       var indentText = new Array(indentLevel).join(' ');
 
-      while(wrapColumn < charsRemaining) {
-        var charsToCopy = breakPos(thisLine, wrapColumn - indentLevel - 2);
+      while(wrapColumn - indentLevel < charsRemaining) {
+        var charsToCopy = breakPos(thisLine, wrapColumn - indentLevel);
         var nextLine = thisLine.substring(0,charsToCopy);
 
         charsRemaining -= charsToCopy;
@@ -53,7 +53,7 @@ function breakPos(string, maxChars) {
   var maxBreakLen = -1;
 
   for(var i = 0; i < breakchars.length; ++i) {
-    var search = string.substring(0, maxChars);
+    var search = string.substring(0, maxChars - 1); // leave a space for the final "
     var lastChar = search.lastIndexOf(' ');
     if(maxBreakLen < lastChar) {
       maxBreakLen = lastChar;
