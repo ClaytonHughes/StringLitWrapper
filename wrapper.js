@@ -59,7 +59,12 @@ function breakPos(string, maxChars) {
       maxBreakLen = lastChar;
     }
   }
-            
+  
+  // If there's no breakable character, just tax the max:
+  if(maxBreakLen < 0) {
+    maxBreakLen = maxChars - 2;
+  }
+
   return maxBreakLen + 1;
 }
 

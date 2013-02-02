@@ -81,6 +81,26 @@
       //                          12345678901234567890123456789012345678901234567890123456789012345678901234567890
       strdiff(textElement.value, 'write("You are in a strange location, but you cannot remember how you got "\n' +
                                  '      "here. Everything is hazy, as though viewed through a gauze...");\n', 'Rewrap concatenated strings into one');
+
+      textElement.value = 'print("It is a moonless night. The lantern light does not reach far.");'; // -- Alabaster
+      // Perhaps a _little_ pathological. Still, an infinite loop is bad.
+      wrapText('code', 14)
+      //                                   1     
+      //                          12345678901234
+      strdiff(textElement.value, 'print("It is "\n' +
+                                 '      "a "\n' +
+                                 '      "moonle"\n' + // note: if no breakable chars, just use the max amount
+                                 '      "ss "\n' + 
+                                 '      "night."\n' + // note: wrapping what would be a breakable char
+                                 '      " The "\n' +
+                                 '      "lanter"\n' +
+                                 '      "n "\n' +
+                                 '      "light "\n' +
+                                 '      "does "\n' +
+                                 '      "not "\n' +
+                                 '      "reach "\n' +
+                                 '      "far.");\n', 'Wrapping with words too long for the column');
+
     }
 
     runTest();
