@@ -42,9 +42,15 @@
             output += indentText + '"' + nextLine + '"\n';    
           }
 
-          output += indentText + '"' + thisLine + '\n';
+          output += indentText + '"' + thisLine;
         }
       }
+      
+      // End with newline
+      if(output[output.length -1] != '\n') {
+        output += '\n'; 
+      }
+
 
       textElement.value = output;
       textElement.focus();
