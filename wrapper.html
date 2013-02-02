@@ -2,99 +2,7 @@
 <head>
   <title>String Literal Wrapper</title>
 </head>
-<body>
-  <script>
-    function wrapText() {
-      var textElement = document.getElementById('code');
-      var lineList = textElement.value.split('\n');
-
-      var widthElement = document.getElementById('wrapwidth');
-      var wrapColumn = parseInt(widthElement.value, 10);
-
-      var output = '';
-
-      lineList = combineContiguousStrings(lineList);
-
-      for(var i = 0; i < lineList.length; ++i) {
-        var thisLine = lineList[i];
-        if(thisLine.length < wrapColumn) {
-          output += thisLine + '\n';
-        } else {
-          var indentLevel = thisLine.indexOf('"') + 1; // at this point, a \" wouldn't make sense, so this is the string literal start.
-          var charsRemaining = thisLine.length;
-
-          // copy the first part of the line into the output as-is
-          var firstCopyChars = breakPos(thisLine, wrapColumn - 2);
-          output += thisLine.substring(0, firstCopyChars) + '"\n';
-
-          charsRemaining -= firstCopyChars;
-          thisLine = thisLine.substring(firstCopyChars, thisLine.length);
-
-          var indentText = new Array(indentLevel).join(' ');
-
-          while(wrapColumn < charsRemaining) {
-            var charsToCopy = breakPos(thisLine, wrapColumn - indentLevel - 2);
-            var nextLine = thisLine.substring(0,charsToCopy);
-
-            charsRemaining -= charsToCopy;
-            thisLine = thisLine.substring(charsToCopy, thisLine.length);
-
-            output += indentText + '"' + nextLine + '"\n';    
-          }
-
-          output += indentText + '"' + thisLine;
-        }
-      }
-      
-      // End with newline
-      if(output[output.length -1] != '\n') {
-        output += '\n'; 
-      }
-
-
-      textElement.value = output;
-      textElement.focus();
-      textElement.setSelectionRange(0,0);
-      textElement.scrollTop = 0;
-
-    }
-
-    function breakPos(string, maxChars) {
-      var breakchars = [' ', '-'];
-      var maxBreakLen = -1;
-
-      for(var i = 0; i < breakchars.length; ++i) {
-        var search = string.substring(0, maxChars);
-        var lastChar = search.lastIndexOf(' ');
-        if(maxBreakLen < lastChar) {
-          maxBreakLen = lastChar;
-        }
-      }
-
-      return maxBreakLen + 1;
-    }
-    
-    function combineContiguousStrings(lineList) {
-      var wrappedLine = /^\s*\"/; // white space followed by a quote
-      var newList = [];
-      for(var i = 0; i < lineList.length; ++i) {
-        if(!wrappedLine.test(lineList[i])) {
-          newList.push(lineList[i]);
-        } else {
-          var prevLine = newList[newList.length - 1];
-          var lastQuote = prevLine.lastIndexOf('"');
-          prevLine = prevLine.substring(0, lastQuote); // strip off last quote character.
-          var append = lineList[i].substring(lineList[i].indexOf('"')+1); // strip off first quote character
-
-          newList[newList.length - 1] = prevLine + append;
-        }
-      }
-      
-      return newList;
-    }
-
-  </script>
-
+<body>  
   Word Wrap Column:
   <select id="wrapwidth">
     <option>70</option>
@@ -103,8 +11,9 @@
     <option>100</option>
     <option>120</option>
   </select>
-  <button id="wrapbutt" onClick="wrapText()" type="button">Wrap it.</button>
-  <br><br>
+  <button id="wrapbutt" onClick="wrapText('code', wrapwidth.value)" type="button">Wrap it.</button>
+  <br><br>  
   <textarea autofocus="true" cols="120" placeholder="Paste your code here..." rows="30" id="code"></textarea>
+  <script src="wrapper.js" ></script>
 </body>
 </html>
