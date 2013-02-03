@@ -1,7 +1,10 @@
 <html>
 <head>
   <title>String Literal Wrapper Test Cases</title>
-  <style>  
+  <style> 
+    ul {
+      font-family: monospace;
+    }
     .pass:before {  
       content: 'PASS: ';  
       color:  green;  
@@ -31,9 +34,12 @@
       var minLen = Math.min(str1.length, str2.length);
 
       for(var i = 0; i < minLen; ++i) {
-        if(str1[i] == str2[i]) continue;
+        var newlines = /\n/g;
+        s1 = str1.replace(newlines, "\\n");
+        s2 = str2.replace(newlines, "\\n");
 
-        assert(false, msg + ' - Differs at position [' + i + '] \'' + str1[i] + '\' != \'' + str2[i] + '\'');
+        if(s1[i] == s2[i]) continue;
+        assert(false, msg + ' - Differs at position [' + i + ']: \'' + s1.substr(i-10,20) + '\' != \'' + s2.substr(i-10,20) + '\'');
         return;
       }
       
@@ -118,7 +124,7 @@
       wrapText('code', 60);
       //                                   1         2         3         4         5         6
       //                          123456789012345678901234567890123456789012345678901234567890
-      strdiff(textElement.value, 'foo( get_the_latest_frob( /* John "needs" us to frob here */ ) + zorp() - bebop() );');
+      strdiff(textElement.value, 'foo( get_the_latest_frob( /* John "needs" us to frob here */ ) + zorp() - bebop() );', "Someone is being mean to us");
 
       textElement.value = '   line_one();\n\n   line_three();\n\n   line_five("try not to screw this up, okay guys? It would be really nice if everything wrapped smoothly and nothing went totally awry.");\n\n   function whatev()\n   {\n      one_last_call();\n   }';
       wrapText('code', 60);
