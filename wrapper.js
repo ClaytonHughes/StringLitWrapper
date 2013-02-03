@@ -8,7 +8,7 @@ function wrapText(textelemID, wrapColumn) {
 
   for(var i = 0; i < lineList.length; ++i) {
     var thisLine = lineList[i];
-    if(thisLine.length < wrapColumn) {
+    if(thisLine.length < wrapColumn || !containsWrappableString(thisLine)) {
       output += thisLine + '\n';
     } else {
       var indentLevel = thisLine.indexOf('"') + 1; // ... assuming not a quote stuck in a comment somewhere
@@ -37,15 +37,24 @@ function wrapText(textelemID, wrapColumn) {
     }
   }
 
-  // End with newline
+  // End with only one newline
   if(output[output.length -1] != '\n') {
     output += '\n'; 
+  } else {
+    while(output[output.length - 2] === '\n') {
+      output = output.substring(0, output.length - 1);
+    }
   }
 
   textElement.value = output;
   textElement.focus();
   textElement.setSelectionRange(0,0);
   textElement.scrollTop = 0;
+}
+
+function containsWrappableString(line) {
+  var stringLiteral = /\".+\"/; // anything with a pair of double-quotes
+  return stringLiteral.test(line);
 }
 
 function breakPos(string, maxChars) {
