@@ -120,6 +120,24 @@
       //                          123456789012345678901234567890123456789012345678901234567890
       strdiff(textElement.value, 'foo( get_the_latest_frob( /* John "needs" us to frob here */ ) + zorp() - bebop() );');
 
+      textElement.value = '   line_one();\n\n   line_three();\n\n   line_five("try not to screw this up, okay guys? It would be really nice if everything wrapped smoothly and nothing went totally awry.");\n\n   function whatev()\n   {\n      one_last_call();\n   }';
+      wrapText('code', 60);
+      //                                   1         2         3         4         5         6
+      //                          123456789012345678901234567890123456789012345678901234567890
+      strdiff(textElement.value, '   line_one();\n'+
+                                 '\n'+
+                                 '   line_three();\n'+
+                                 '\n'+
+                                 '   line_five("try not to screw this up, okay guys? It "\n'+
+                                 '             "would be really nice if everything wrapped "\n'+
+                                 '             "smoothly and nothing went totally awry.");\n'+
+                                 '\n'+
+                                 '   function whatev()\n'+
+                                 '   {\n'+
+                                 '      one_last_call();\n'+
+                                 '   }\n', 'Leave extra whitespace alone');
+
+
     }
 
     runTest();
