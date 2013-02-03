@@ -96,7 +96,7 @@
 
       textElement.value = 'print("It is a moonless night. The lantern light does not reach far.");'; // -- Alabaster
       // Perhaps a _little_ pathological. Still, an infinite loop is bad.
-      wrapText('code', 14)
+      wrapText('code', 14);
       //                                   1     
       //                          12345678901234
       strdiff(textElement.value, 'print("It is "\n' +
@@ -112,6 +112,13 @@
                                  '      "not "\n' +
                                  '      "reach "\n' +
                                  '      "far.");\n', 'Wrapping with words too long for the column');
+
+      textElement.value = 'foo( get_the_latest_frob( /* John "needs" us to frob here */ ) + zorp() - bebop() );'
+      // Sigh. I don't even know what to do here.
+      wrapText('code', 60);
+      //                                   1         2         3         4         5         6
+      //                          123456789012345678901234567890123456789012345678901234567890
+      strdiff(textElement.value, 'foo( get_the_latest_frob( /* John "needs" us to frob here */ ) + zorp() - bebop() );');
 
     }
 
