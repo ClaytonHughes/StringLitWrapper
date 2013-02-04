@@ -33,7 +33,7 @@ function wrapText(textelemID, wrapColumn) {
         output += indentText + '"' + nextLine + '"\n';    
       }
 
-      output += indentText + '"' + thisLine;
+      output += indentText + '"' + thisLine + '\n';
     }
   }
 
