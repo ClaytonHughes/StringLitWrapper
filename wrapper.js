@@ -7,10 +7,13 @@ function wrapText(textelemID, wrapColumn) {
   lineList = combineContiguousStrings(lineList);
 
   for(var i = 0; i < lineList.length; ++i) {
+    
     var thisLine = lineList[i];
+
     if(thisLine.length < wrapColumn || !containsWrappableString(thisLine)) {
       output += thisLine + '\n';
     } else {
+
       var indentLevel = thisLine.indexOf('"') + 1; // ... assuming not a quote stuck in a comment somewhere
       var charsRemaining = thisLine.length;
 
@@ -23,6 +26,7 @@ function wrapText(textelemID, wrapColumn) {
 
       var indentText = new Array(indentLevel).join(' ');
 
+      // copy additional lines, indenting and quoting
       while(wrapColumn - indentLevel < charsRemaining) {
         var charsToCopy = breakPos(thisLine, wrapColumn - indentLevel);
         var nextLine = thisLine.substring(0,charsToCopy);
@@ -30,7 +34,7 @@ function wrapText(textelemID, wrapColumn) {
         charsRemaining -= charsToCopy;
         thisLine = thisLine.substring(charsToCopy, thisLine.length);
 
-        output += indentText + '"' + nextLine + '"\n';    
+        output += indentText + '"' + nextLine + '"\n';
       }
 
       output += indentText + '"' + thisLine + '\n';
@@ -38,13 +42,7 @@ function wrapText(textelemID, wrapColumn) {
   }
 
   // End with only one newline
-  if(output[output.length -1] != '\n') {
-    output += '\n'; 
-  } else {
-    while(output[output.length - 2] === '\n') {
-      output = output.substring(0, output.length - 1);
-    }
-  }
+  output = ensureTrailingNewline(output);
 
   textElement.value = output;
   textElement.focus();
@@ -92,6 +90,16 @@ function combineContiguousStrings(lineList) {
       newList[newList.length - 1] = prevLine + append;
     }
   }
-  
   return newList;
 }
+
+function ensureTrailingNewline(text) {
+  if(text[text.length -1] != '\n') {
+    text += '\n'; 
+  } else {
+    while(text[text.length - 2] === '\n') {
+      text = text.substring(0, text.length - 1);
+    }
+  }
+  return text;
+} 
