@@ -88,13 +88,15 @@ function combineContiguousStrings(lineList) {
   return newList;
 }
 
-function ensureTrailingNewline(text) {
-  if(text[text.length -1] != '\n') {
-    text += '\n'; 
+function ensureTrailingNewline(str) {
+  if(str[str.length - 1] != '\n') {
+    str += '\n'; 
   } else {
-    while(text[text.length - 2] === '\n') {
-      text = text.substring(0, text.length - 1);
+    var i = str.length - 1;
+    while(str[i] === '\n' && 0 < i) {
+      --i;      
     }
+    str = str.substring(0, i+2);
   }
-  return text;
+  return str;
 } 
