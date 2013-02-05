@@ -15,26 +15,20 @@ function wrapText(textelemID, wrapColumn) {
     } else {
 
       var indentLevel = thisLine.indexOf('"') + 1; // ... assuming not a quote stuck in a comment somewhere
-      var charsRemaining = thisLine.length;
 
       // copy the first part of the line into the output as-is
-      var firstCopyChars = breakPos(thisLine, wrapColumn);
-      output += thisLine.substring(0, firstCopyChars) + '"\n';
-
-      charsRemaining -= firstCopyChars;
-      thisLine = thisLine.substring(firstCopyChars, thisLine.length);
+      var slice = breakString(thisLine, wrapColumn);
+      output += slice.line + '"\n';
+      thisLine = slice.rest;
 
       var indentText = new Array(indentLevel).join(' ');
 
       // copy additional lines, indenting and quoting
-      while(wrapColumn - indentLevel < charsRemaining) {
-        var charsToCopy = breakPos(thisLine, wrapColumn - indentLevel);
-        var nextLine = thisLine.substring(0,charsToCopy);
+      while(wrapColumn - indentLevel < thisLine.length) {
+        slice = breakString(thisLine, wrapColumn - indentLevel);
+        thisLine = slice.rest;
 
-        charsRemaining -= charsToCopy;
-        thisLine = thisLine.substring(charsToCopy, thisLine.length);
-
-        output += indentText + '"' + nextLine + '"\n';
+        output += indentText + '"' + slice.line + '"\n';
       }
 
       output += indentText + '"' + thisLine + '\n';
@@ -55,7 +49,7 @@ function containsWrappableString(line) {
   return stringLiteral.test(line);
 }
 
-function breakPos(string, maxChars) {
+function breakString(string, maxChars) {
   var breakchars = [' ', '-'];
   var maxBreakLen = -1;
 
@@ -67,12 +61,13 @@ function breakPos(string, maxChars) {
     }
   }
   
-  // If there's no breakable character, just tax the max:
+  // If there's no breakable character, just take the max:
   if(maxBreakLen < 0) {
     maxBreakLen = maxChars - 2;
   }
 
-  return maxBreakLen + 1;
+  return { line: string.substring(0, maxBreakLen + 1),
+           rest: string.substring(maxBreakLen + 1, string.length) };
 }
 
 function combineContiguousStrings(lineList) {
