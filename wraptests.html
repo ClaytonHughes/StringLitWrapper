@@ -14,7 +14,10 @@
       content: 'FAIL: ';  
       color: red;  
       font-weight: bold;  
-    }  
+    }
+    div {
+      margin-left: 25px;
+    }
     </style>  
 </head>
 <body>  
@@ -25,25 +28,32 @@
     function assert(test, msg) {
       var li = document.createElement('li');
       li.className = test ? 'pass' : 'fail';
-      li.appendChild(document.createTextNode(msg));
+      li.innerHTML = msg;
       var tests = document.getElementById('tests');
       tests.appendChild(li);
     }
 
-    function strdiff(str1, str2, msg) {
-      var minLen = Math.min(str1.length, str2.length);
+    function strdiff(actual, expected, msg) {
+      var minLen = Math.min(actual.length, expected.length);
 
       for(var i = 0; i < minLen; ++i) {
-        var newlines = /\n/g;
-        s1 = str1.replace(newlines, "\\n");
-        s2 = str2.replace(newlines, "\\n");
+        if(actual[i] == expected[i]) continue;
+        var newlines = /\n/g,
+            spaces = / /g;
 
-        if(s1[i] == s2[i]) continue;
-        assert(false, msg + ' - Differs at position [' + i + ']: \'' + s1.substr(i-10,20) + '\' != \'' + s2.substr(i-10,20) + '\'');
+        // use pilcrow instead of newline because &x#2424 isn't actually monospace
+        var actual_excerpt = actual.substr(i-10,20).replace(newlines, "&para;").replace(spaces, "&nbsp;"),
+            expected_excerpt = expected.substr(i-10,20).replace(newlines, "&para;").replace(spaces, "&nbsp;");
+
+        var expect_header = 'expected: \'',
+            actual_header = 'actual&nbsp;&nbsp;: \'',
+            errico_header = Array(expect_header.length + 11).join('&nbsp');
+
+        assert(false, msg + ' - Differs at position [' + i + ']:<div>' + expect_header + expected_excerpt + '\'</div><div>' + actual_header + actual_excerpt + '\'</div><div>' + errico_header + '^</div>');
         return;
       }
       
-      if(str1.length != minLen || str2.length != minLen){
+      if(actual.length != minLen || expected.length != minLen){
         assert(false, msg + ' - Differs in length at position [' + minLen + ']' ); 
         return;
       }
