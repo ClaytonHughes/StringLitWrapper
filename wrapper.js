@@ -1,4 +1,4 @@
-function wrapText(textelemID, wrapColumn) {
+this.wrapText = function(textelemID, wrapColumn) {
   var textElement = document.getElementById(textelemID);
   var lineList = textElement.value.split('\n');
 
@@ -44,12 +44,12 @@ function wrapText(textelemID, wrapColumn) {
   textElement.scrollTop = 0;
 }
 
-function containsWrappableString(line) {
+this.containsWrappableString = function(line) {
   var stringLiteral = /\".+\"/; // anything with a pair of double-quotes
   return stringLiteral.test(line);
 }
 
-function breakString(string, maxChars) {
+this.breakString = function(string, maxChars) {
   var breakchars = [' ', '-'];
   var maxBreakLen = -1;
 
@@ -70,7 +70,7 @@ function breakString(string, maxChars) {
            rest: string.substring(maxBreakLen + 1, string.length) };
 }
 
-function combineContiguousStrings(lineList) {
+this.combineContiguousStrings = function(lineList) {
   var wrappedLine = /^\s*\"/; // white space followed by a quote
   var newList = [];
   for(var i = 0; i < lineList.length; ++i) {
@@ -88,7 +88,7 @@ function combineContiguousStrings(lineList) {
   return newList;
 }
 
-function ensureTrailingNewline(str) {
+this.ensureTrailingNewline = function(str) {
   if(str[str.length - 1] != '\n') {
     str += '\n'; 
   } else {
