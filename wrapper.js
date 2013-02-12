@@ -1,6 +1,5 @@
-this.wrapText = function(textelemID, wrapColumn) {
-  var textElement = document.getElementById(textelemID);
-  var lineList = textElement.value.split('\n');
+this.wrapText = function(str, wrapColumn) {  
+  var lineList = str.split('\n');
 
   var output = '';
 
@@ -36,13 +35,18 @@ this.wrapText = function(textelemID, wrapColumn) {
   }
 
   // End with only one newline
-  output = ensureTrailingNewline(output);
+  return ensureTrailingNewline(output);
+}
 
-  textElement.value = output;
+this.wrapTextArea = function(textelemID, wrapColumn) {
+  var textElement = document.getElementById(textelemID);
+  
+  textElement.value = wrapText(textElement.value, wrapColumn);
   textElement.focus();
   textElement.setSelectionRange(0,0);
   textElement.scrollTop = 0;
 }
+
 
 this.containsWrappableString = function(line) {
   var stringLiteral = /\".+\"/; // anything with a pair of double-quotes
