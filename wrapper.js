@@ -3,20 +3,20 @@ this.wrapText = function(str, wrapColumn) {
 
   var output = '';
 
-  lineList = combineContiguousStrings(lineList);
+  lineList = this.combineContiguousStrings(lineList);
 
   for(var i = 0; i < lineList.length; ++i) {
     
     var thisLine = lineList[i];
 
-    if(thisLine.length < wrapColumn || !containsWrappableString(thisLine)) {
+    if(thisLine.length < wrapColumn || !this.containsWrappableString(thisLine)) {
       output += thisLine + '\n';
     } else {
 
       var indentLevel = thisLine.indexOf('"') + 1; // ... assuming not a quote stuck in a comment somewhere
 
       // copy the first part of the line into the output as-is
-      var slice = breakString(thisLine, wrapColumn);
+      var slice = this.breakString(thisLine, wrapColumn);
       output += slice.line + '"\n';
       thisLine = slice.rest;
 
@@ -24,7 +24,7 @@ this.wrapText = function(str, wrapColumn) {
 
       // copy additional lines, indenting and quoting
       while(wrapColumn - indentLevel < thisLine.length) {
-        slice = breakString(thisLine, wrapColumn - indentLevel);
+        slice = this.breakString(thisLine, wrapColumn - indentLevel);
         thisLine = slice.rest;
 
         output += indentText + '"' + slice.line + '"\n';
@@ -35,7 +35,7 @@ this.wrapText = function(str, wrapColumn) {
   }
 
   // End with only one newline
-  return ensureTrailingNewline(output);
+  return this.ensureTrailingNewline(output);
 }
 
 this.wrapTextArea = function(textelemID, wrapColumn) {
