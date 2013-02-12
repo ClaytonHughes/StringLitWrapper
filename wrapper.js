@@ -1,4 +1,9 @@
-this.wrapText = function(str, wrapColumn) {  
+this.wrapText = function(str, wrapColumn) {
+
+  if(typeof(wrapColumn) === 'undefined') {
+    wrapColumn = 78;
+  }
+
   var lineList = str.split('\n');
 
   var output = '';
