@@ -88,9 +88,13 @@ this.combineContiguousStrings = function(lineList) {
     } else {
       var prevLine = newList[newList.length - 1];
       var lastQuote = prevLine.lastIndexOf('"');
-      prevLine = prevLine.substring(0, lastQuote); // strip off last quote character.
-      var append = lineList[i].substring(lineList[i].indexOf('"')+1); // strip off first quote character
-
+      var append = lineList[i].substring(lineList[i].indexOf('"'));
+      // if the previous line had a quote in it, this is very likely a true continuation:
+      if(0 <= lastQuote) {
+        // combine strings by removing quote characters:
+        prevLine = prevLine.substring(0, lastQuote);
+        append = append.substring(1);
+      }
       newList[newList.length - 1] = prevLine + append;
     }
   }
@@ -103,9 +107,9 @@ this.ensureTrailingNewline = function(str) {
   } else {
     var i = str.length - 1;
     while(str[i] === '\n' && 0 < i) {
-      --i;      
+      --i;
     }
     str = str.substring(0, i+2);
   }
   return str;
-} 
+}

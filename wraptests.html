@@ -164,6 +164,23 @@
                                  '   }\n', 'Leave extra whitespace alone');
     }
 
+    function testLonelyString(textElement) {
+      textElement.value = 'looks_like_javascript = {\n\n    set_description(\n    "This text is so long that someone manually moved it down to the next line. I do not know why. But we want our application to not screw up (or totally die eating its own memory) when this happens.");\n\n}();';
+      wrapTextArea('code',60);
+      //                                   1         2         3         4         5         6
+      //                          123456789012345678901234567890123456789012345678901234567890
+      strdiff(textElement.value, 'looks_like_javascript = {\n'+
+                                 '\n'+
+                                 '    set_description("This text is so long that someone "\n'+
+                                 '                    "manually moved it down to the next "\n' +
+                                 '                    "line. I do not know why. But we want "\n'+
+                                 '                    "our application to not screw up (or "\n'+
+                                 '                    "totally die eating its own memory) "\n'+
+                                 '                    "when this happens.");\n'+
+                                 '\n'+
+                                 '}();\n',
+                                 'String literal on a line by itself.');
+    }
 
     function runTest() {
       var textElement = document.getElementById('code');
@@ -174,6 +191,7 @@
       testEdgeCaseWrap(textElement);    
       testReWrapConcat(textElement);
       testWordTooLong(textElement);
+      testLonelyString(textElement);
       testQuotesInComments(textElement);
       
     }
