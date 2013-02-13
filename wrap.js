@@ -10,9 +10,9 @@ _.each(args, function(arg) {
         if(err) {
             console.log("Error Reading "+arg +" : " + err);
         } else {
-            console.log("Wrapping " + arg + " -> " + arg + ".wrapped");
+            console.log("Wrapping " + arg + " -> " + arg );
             var output = wrapper.wrapText(data.toString(), 78);
-            fs.writeFile(arg + ".wrapped", output, function(err) {
+            fs.writeFile(arg, output, function(err) {
                 if(err) { console.log("Error Writing "+arg + " : " + err); }
             });
         }
